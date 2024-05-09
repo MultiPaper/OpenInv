@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 class InternalAccessor {
 
     private final @NotNull Plugin plugin;
-    private final String version;
+    private String version;
     private boolean supported = false;
     private IPlayerDataManager playerDataManager;
     private IAnySilentContainer anySilentContainer;
@@ -42,12 +42,24 @@ class InternalAccessor {
         this.version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
         try {
+            Player.class.getMethod("isExternalPlayer");
+            this.version += "_multipaper";
+            plugin.getLogger().info("Detected MultiPaper");
+        } catch (NoSuchMethodException e) {
+            // Ignored
+        }
+
+        plugin.getLogger().info("Using server version internal/" + this.version);
+
+        try {
             Class.forName("com.lishid.openinv.internal." + this.version + ".SpecialPlayerInventory");
             Class.forName("com.lishid.openinv.internal." + this.version + ".SpecialEnderChest");
             this.playerDataManager = this.createObject(IPlayerDataManager.class, "PlayerDataManager");
             this.anySilentContainer = this.createObject(IAnySilentContainer.class, "AnySilentContainer");
             this.supported = InventoryAccess.isUsable();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            plugin.getLogger().warning("Unsupported server version " + this.version);
+        }
     }
 
     public String getReleasesLink() {

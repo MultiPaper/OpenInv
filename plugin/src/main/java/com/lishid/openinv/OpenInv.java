@@ -148,6 +148,11 @@ public class OpenInv extends JavaPlugin implements IOpenInv {
             // Register listeners
             pm.registerEvents(new PlayerListener(this), this);
             pm.registerEvents(new InventoryListener(this), this);
+            try {
+                pm.registerEvents(new MultiPaperPlayerListener(this), this);
+            } catch (Exception e) {
+                // Ignored
+            }
 
             // Register commands to their executors
             this.setCommandExecutor(new OpenInvCommand(this), "openinv", "openender");
@@ -519,12 +524,20 @@ public class OpenInv extends JavaPlugin implements IOpenInv {
      * @param player the Player
      */
     void setPlayerOffline(@NotNull Player player) {
-        setPlayerOffline(player, offlineHandler);
+        setPlayerOffline(player.getUniqueId());
+    }
+
+    void setPlayerOffline(@NotNull UUID key) {
+        setPlayerOffline(inventories, key, offlineHandler);
     }
 
     private void setPlayerOffline(@NotNull OfflinePlayer player, @NotNull OfflineHandler handler) {
         UUID key = player.getUniqueId();
 
+        setPlayerOffline(key, handler);
+    }
+
+    private void setPlayerOffline(@NotNull UUID key, @NotNull OfflineHandler handler) {
         setPlayerOffline(inventories, key, handler);
         setPlayerOffline(enderChests, key, handler);
     }

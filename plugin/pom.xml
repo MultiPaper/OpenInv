@@ -40,6 +40,10 @@
       <artifactId>spigot-api</artifactId>
       <groupId>org.spigotmc</groupId>
     </dependency>
+    <dependency>
+      <artifactId>multipaper-api</artifactId>
+      <groupId>com.github.puregero</groupId>
+    </dependency>
   </dependencies>
 
   <build>
